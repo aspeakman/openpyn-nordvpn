@@ -10,25 +10,60 @@ verboselogs.install()
 logger = logging.getLogger(__package__)
 
 
+def res_list_from_response(json_response) -> List: 
+    group_titles = {}
+    for eachGroup in json_response["groups"]:
+        group_titles[eachGroup["id"]] = eachGroup['title']
+
+    for eachServer in json_response["servers"]:
+        these_groups = []
+        for eachGroupId in eachServer["group_ids"]:
+            these_groups.append(eachGroupTitle)
+        eachServer["group_titles"] = these_groups
+        
+    lat_longs = {}
+    for eachLocation in json_response["locations"]:
+        lat_longs[eachLocation["id"]] = { 'lat': eachLocation["latitude"]; 'long': eachLocation["longitude"] }
+
+    for eachServer in json_response["servers"]:
+        these_locations = []
+        for eachLocationId in eachServer["location_ids"]:
+            these_locations.append(lat_longs[eachLocationId])
+        eachServer["lat_longs"] = these_locations
+    
+    technology_identifiers = {}
+    for eachTechnology in json_response["technologies"]:
+        technology_identifiers[eachTechnology["id"]] = eachTechnology["identifier"]
+
+    for eachServer in json_response["servers"]:
+        these_technologies = []
+        for eachTechnology in eachServer["technologies"]:
+            these_technologies.append(technology_identifiers[eachTechnology["id"]])
+        eachServer["technology_identifiers"] = these_technologies
+        
+    return json_response["servers"]
+
+
 def filter_by_area(area: str, type_country_filtered: List) -> List:
     remaining_servers = []
     resolved_locations = locations.get_unique_locations(list_of_servers=type_country_filtered)
     for aServer in type_country_filtered:
         for item in resolved_locations:
             lower_case_areas = [x.lower() for x in item[2]]
-            if aServer["location"]["lat"] == item[1]["lat"] and \
-                    aServer["location"]["long"] == item[1]["long"] and \
-                    area.lower() in lower_case_areas:
-                aServer["location_names"] = item[2]  # add location info to server
-                remaining_servers.append(aServer)
-                # logger.debug(aServer)
+            for aLocation in aServer["lat_longs"]:
+                if aLocation["lat"] == item[1]["lat"] and \
+                        aLocation["long"] == item[1]["long"] and \
+                        area.lower() in lower_case_areas:
+                    aServer["location_names"] = item[2]  # add location info to server
+                    remaining_servers.append(aServer)
+                    # logger.debug(aServer)
     return remaining_servers
 
 
 def filter_by_country(country_code: str, type_filtered_servers: List) -> List:
     remaining_servers = []
     for aServer in type_filtered_servers:
-        if aServer["domain"][:2] == country_code:
+        if aServer["hostname"][:2] == country_code:
             remaining_servers.append(aServer)
             # logger.debug(aServer["domain"])
     return remaining_servers
@@ -37,13 +72,14 @@ def filter_by_country(country_code: str, type_filtered_servers: List) -> List:
 def filter_by_location(location: float, type_filtered_servers: List) -> List:
     remaining_servers = []
     for aServer in type_filtered_servers:
-        if aServer["location"]["lat"] == location[0] and aServer["location"]["long"] == location[1]:
-            remaining_servers.append(aServer)
-            # logger.debug(aServer)
+        for aLocation in aServer["lat_longs"]:
+            if aLocation["lat"] == location[0] and aLocation["long"] == location[1]:
+                remaining_servers.append(aServer)
+                # logger.debug(aServer)
     return remaining_servers
 
 
-def filter_by_netflix(json_response, country_code: str) -> List:
+def filter_by_netflix(json_res_list: List, country_code: str) -> List:
     remaining_servers = []
     server_count = 0
     netflix_us = [[585, 592, "us"], [603, 604, "us"], [609, 617, "us"], [625, 632, "us"], [645, 680, "us"],
@@ -109,60 +145,63 @@ def filter_by_netflix(json_response, country_code: str) -> List:
     elif country_code == "all":
         netflix_srv = netflix_us + netflix_ca + netflix_nl + netflix_jp + netflix_uk + netflix_gr + netflix_mx
 
-    for eachServer in json_response:
+    for eachServer in json_res_list:
         server_count += 1
         for server in netflix_srv:
             for number in range(server[0], server[1] + 1):
-                if server[2] + str(number) + "." in eachServer["domain"]:
+                if server[2] + str(number) + "." in eachServer["hostname"]:
                     remaining_servers.append(eachServer)
-                    # logger.debug(eachServer["domain"])
+                    # logger.debug(eachServer["hostname"])
+                    
     # logger.debug("Total available servers = ", serverCount)
     return remaining_servers
 
 
-def filter_by_type(json_response, p2p: bool, dedicated: bool, double_vpn: bool, tor_over_vpn: bool, anti_ddos: bool) -> List:
+def filter_by_type(json_res_list: List, p2p: bool, dedicated: bool, double_vpn: bool, tor_over_vpn: bool, anti_ddos: bool) -> List:
     remaining_servers = []
     server_count = 0
     standard_vpn = False
-
+    
     if p2p is False and dedicated is False and double_vpn is False and tor_over_vpn is False and anti_ddos is False:
         standard_vpn = True
-
-    for eachServer in json_response:
+        
+    for eachServer in json_res_list:
         server_count += 1
-        for ServerType in eachServer["categories"]:
-            if p2p and ServerType["name"] == "P2P":
+        for eachGroupTitle in eachServer["group_titles"]:
+            if p2p and eachGroupTitle == "P2P":
                 remaining_servers.append(eachServer)
                 break
-            if dedicated and ServerType["name"] == "Dedicated IP":
+            if dedicated and eachGroupTitle == "Dedicated IP":
                 remaining_servers.append(eachServer)
                 break
-            if double_vpn and ServerType["name"] == "Double VPN":
+            if double_vpn and eachGroupTitle == "Double VPN":
                 remaining_servers.append(eachServer)
                 break
-            if tor_over_vpn and ServerType["name"] == "Onion Over VPN":
+            if tor_over_vpn and eachGroupTitle == "Onion Over VPN":
                 remaining_servers.append(eachServer)
                 break
-            if anti_ddos and ServerType["name"] == "Obfuscated Servers":
+            if anti_ddos and eachGroupTitle == "Obfuscated Servers":
                 remaining_servers.append(eachServer)
                 break
-            if standard_vpn and ServerType["name"] == "Standard VPN servers":
+            if standard_vpn and eachGroupTitle == "Standard VPN servers":
                 remaining_servers.append(eachServer)
                 break
+    
     # logger.debug("Total available servers = ", serverCount)
     return remaining_servers
-
-
+    
+    
 def filter_by_protocol(json_res_list: List, tcp: bool) -> List:
     remaining_servers = []
 
     for res in json_res_list:
         # when connecting using TCP only append if it supports OpenVPN-TCP
-        if tcp is True and res["features"]["openvpn_tcp"] is True:
-            remaining_servers.append([res["domain"][:res["domain"].find(".")], res["load"]])
+        tech_ids = res["technology_identifiers"]
+        if tcp is True and ("openvpn_tcp" in tech_ids or "openvpn_dedicated_tcp" in tech_ids:
+            remaining_servers.append([res["hostname"][:res["hostname"].find(".")], res["load"]])
         # when connecting using UDP only append if it supports OpenVPN-UDP
-        elif tcp is False and res["features"]["openvpn_udp"] is True:
-            remaining_servers.append([res["domain"][:res["domain"].find(".")], res["load"]])
+        elif tcp is False and ("openvpn_udp" in tech_ids or "openvpn_dedicated_udp" in tech_ids):
+            remaining_servers.append([res["hostname"][:res["hostname"].find(".")], res["load"]])
     return remaining_servers
 
 

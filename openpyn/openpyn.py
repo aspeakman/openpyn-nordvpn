@@ -1100,9 +1100,10 @@ def display_servers(list_servers: str, port: str, area: str, p2p: bool, dedicate
 
     # add server names to "servers_on_web" set
     for res in json_res_list:
-        print("Server =", res["domain"][:res["domain"].find(".")], ", Load =", res["load"],
-              ", Country =", res["country"], ", Features", res["categories"], "\n")
-        servers_on_web.add(res["domain"][:res["domain"].find(".")])
+        print("Server =", res["hostname"][:res["hostname"].find(".")], ", Load =", res["load"],
+              ", Country =", res["name"][:res["name"].find(" #")], 
+              ", Groups =", res["group_titles"], "\n")
+        servers_on_web.add(res["hostname"][:res["hostname"].find(".")])
 
     if not area:
         locations_in_country = locations.get_unique_locations(list_of_servers=json_res_list)

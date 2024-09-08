@@ -31,15 +31,16 @@ def get_json_cached(url) -> Dict:
                 logger.error("Error occurred while updating nordvpn.json, rate limit exceeded?")
     else:
         json_data = get_json(url)
-
+        
     if json_data is not None:
+        json_res_list = filters.res_list_from_response(json_data)
         with open(json_path, "w") as json_file:
-            json.dump(json_data, json_file)
+            json.dump(json_res_list, json_file)
     else:
         with open(json_path, "r") as json_file:
-            json_data = json.load(json_file)
+            json_res_list = json.load(json_file)
 
-    return json_data
+    return json_res_list
 
 
 # Using requests, GETs and returns JSON from a url.
@@ -70,14 +71,14 @@ def get_data_from_api(
         country_code: str, area: str, p2p: bool, dedicated: bool, double_vpn: bool,
         tor_over_vpn: bool, anti_ddos: bool, netflix: bool, location: float) -> List:
     country_code = country_code.lower()
-    url = "https://api.nordvpn.com/server"
-    json_response = get_json_cached(url)
+    url = "https://api.nordvpn.com/v2/servers?limit=16384"
+    json_res_list = get_json_cached(url)
 
     type_filtered_servers = []
     if netflix:
-        type_filtered_servers = filters.filter_by_netflix(json_response, country_code)
+        type_filtered_servers = filters.filter_by_netflix(json_res_list, country_code)
     else:
-        type_filtered_servers = filters.filter_by_type(json_response, p2p, dedicated, double_vpn, tor_over_vpn, anti_ddos)
+        type_filtered_servers = filters.filter_by_type(json_res_list, p2p, dedicated, double_vpn, tor_over_vpn, anti_ddos)
     if location:
         type_location_filtered = filters.filter_by_location(location, type_filtered_servers)
         return type_location_filtered
@@ -92,32 +93,32 @@ def get_data_from_api(
 
 def list_all_countries() -> None:
     countries_mapping = {}
-    url = "https://api.nordvpn.com/server"
+    url = "https://api.nordvpn.com/v2/servers?limit=16384"
     json_response = get_json_cached(url)
     for res in json_response:
-        if res["domain"][:2] not in countries_mapping:
-            countries_mapping.update({res["domain"][:2]: res["country"]})
+        if res["hostname"][:2] not in countries_mapping:
+            countries_mapping.update({res["hostname"][:2]: res["name"][:res["name"].find(" #")]})
     for key, val in countries_mapping.items():
         print("Full Name : " + val + "\t\tCountry Code : " + key)
 
 
 def get_country_code(full_name: str) -> str:
     full_name = full_name.lower()
-    url = "https://api.nordvpn.com/server"
+    url = "https://api.nordvpn.com/v2/servers?limit=16384"
     json_response = get_json_cached(url)
     for res in json_response:
-        if res["country"].lower() == full_name:
-            code = res["domain"][:2]
+        if res["name"][:res["name"].find(" #")].lower() == full_name:
+            code = res["hostname"][:2]
             return code
     raise RuntimeError("Country Name Not Correct")
 
 
 def get_country_name(iso_code: str) -> str:
     iso_code = iso_code.lower()
-    url = "https://api.nordvpn.com/server"
+    url = "https://api.nordvpn.com/v2/servers?limit=16384"
     json_response = get_json_cached(url)
     for res in json_response:
-        if res["domain"][:2] == iso_code:
-            name = res["country"]
+        if res["hostname"][:2] == iso_code:
+            name = res["name"][:res["name"].find(" #")]
             return name
     raise RuntimeError("Country Code Not Correct")

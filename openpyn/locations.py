@@ -27,9 +27,9 @@ def get_unique_locations(list_of_servers: List) -> List:
     locations_count = 0
 
     for aServer in list_of_servers:
-        lat_long_dic = {"lat": aServer["location"]["lat"], "long": aServer["location"]["long"]}
-        if lat_long_dic not in unique_locations:
-            unique_locations.append(lat_long_dic)
+        for aLocation in aServer["lat_longs"]:
+            if aLocation not in unique_locations:
+                unique_locations.append(aLocation)
     # logger.debug(unique_locations)
     for eachLocation in unique_locations:
         user_agent = {
