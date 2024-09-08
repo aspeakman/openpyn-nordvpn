@@ -23,7 +23,6 @@ A python3 script (systemd service as well) to manage OpenVPN connections. Create
     "Tor Over VPN" --tor, "Double VPN" --double, "Anti DDos" --anti-ddos support.
 -   Desktop notification are shown when VPN connects and disconnects. (needs to run without sudo)
 -   Auto retry if \[soft,auth-failure\] received, auto failover to next best server if connection dies.
--   NVRAM support for Asuswrt-merlin
 -   Pass through OpenVPN options, e.g. openpyn uk -o '--status /var/log/status.log --log /var/log/log.log'
 -   Logs are stored in '/var/log/openpyn/' for information and troubleshooting.
 -   Temporarily disable IPv6 to prevent leakage (when using -f).
@@ -49,94 +48,18 @@ A python3 script (systemd service as well) to manage OpenVPN connections. Create
 
 ### Installation Methods
 
-1.  Install openpyn with pip3 (Python=>3.5)
-    **Recommended method to get the latest version and receive frequent updates.**
-    Do not install with --user switch, as OpenVPN needs to run as sudo and sudo won’t be able to locate openpyn.
-
+1.  If necessary uninstall any existing openpyn versions with pip3 (Python=>3.5)
+    
     ```bash
-    sudo python3 -m pip install --upgrade openpyn
+    sudo python3 -m pip uninstall openpyn
     ```
 
-2.  Alternatively clone and install.
+2.  Clone this version and install. Do not install with --user switch, as OpenVPN needs to run as sudo and sudo won’t be able to locate openpyn.
 
     ```bash
-    git clone https://github.com/jotyGill/openpyn-nordvpn.git
+    git clone https://github.com/aspeakman/openpyn-nordvpn.git
     cd openpyn-nordvpn/
     sudo python3 -m pip install --upgrade .
-    ```
-
-    For the latest in development features, try the 'test' branch instead
-
-    ```bash
-    git clone --branch test https://github.com/jotyGill/openpyn-nordvpn.git
-    cd openpyn-nordvpn/
-    sudo python3 -m pip install --upgrade .
-    ```
-
-3.  On macOS (credit: [1951FDG](https://github.com/1951FDG))
-
-    ```bash
-    # install Xcode command line tools
-    xcode-select --install
-    ```
-
-    ```bash
-    # install Homebrew
-    curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
-    echo 'export PATH="/usr/local/sbin:$PATH"' >> ~/.bash_profile
-    ```
-
-    ```bash
-    # common dependencies
-    brew install python3 openvpn
-    sudo brew services start openvpn
-    ```
-
-    ```bash
-    git clone --branch test https://github.com/jotyGill/openpyn-nordvpn.git
-    cd openpyn-nordvpn/
-    sudo python3 -m pip install --upgrade pip
-    sudo python3 -m pip install --upgrade .
-    ```
-
-4.  On Asuswrt-merlin, standard installation [Entware](https://gist.github.com/1951FDG/3cada1211df8a59a95a8a71db6310299#file-asuswrt-merlin-md) (credit: [1951FDG](https://github.com/1951FDG))
-
-    Steps below **may** also work for OpenWrt
-
-    ```bash
-    # common dependencies
-    opkg install git git-http iputils-ping procps-ng-pgrep python3 python3-pip sudo unzip
-    ```
-
-    ```bash
-    # allow admin user to run sudo
-    sed -i 's~root ALL=(ALL) ALL~admin ALL=(ALL) ALL~g' /opt/etc/sudoers
-    ```
-
-    ```bash
-    cd /tmp/share/
-    git clone --branch test https://github.com/jotyGill/openpyn-nordvpn.git
-    cd openpyn-nordvpn/
-    python3 -m pip install --upgrade pip
-    python3 -m pip install --upgrade .
-    ```
-
-    Steps below **not** required if only using --nvram option
-
-    ```bash
-    # steps need to be done once after every device reboot
-    modprobe tun
-    iptables -A FORWARD -i eth0 -o tun0 -s 192.168.1.0/24 -m conntrack --ctstate NEW -j ACCEPT
-    iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
-    iptables -A POSTROUTING -t nat -o tun0 -j MASQUERADE
-    ```
-
-    Steps below **may** be required if **not** using --nvram option
-
-    ```bash
-    # change the DNS, either in LAN or WAN settings
-    **DNS Server1** 103.86.96.100
-    **DNS Server2** 103.86.99.100
     ```
 
 ## Setup
@@ -250,23 +173,11 @@ sudo openpyn -x # optionally --allow 22 if using as SSH server
 openpyn --update
 ```
 
--   To quickly connect to United States "OpenVPN Client 5" (Asuswrt-Merlin).
-
-```bash
-openpyn us --nvram 5
-```
-
--   To kill "OpenVPN Client 5" (Asuswrt-Merlin).
-
-```bash
-openpyn -k --nvram 5
-```
-
 ## Usage Options
 
 ```bash
 usage: openpyn [-h] [-v] [--init] [-d] [-k] [-x] [--update] [--skip-dns-patch]
-               [--silent] [--test] [-n NVRAM] [--no-redirect-gateway]
+               [--silent] [--test] [--no-redirect-gateway]
                [-o OPENVPN_OPTIONS] [-s SERVER] [-c COUNTRY_CODE] [--tcp]
                [-a AREA] [-m MAX_LOAD] [-t TOP_SERVERS] [--p2p] [--dedicated]
                [--tor] [--double] [--anti-ddos] [--netflix]
@@ -307,9 +218,6 @@ optional arguments:
                         systemd service file
   --test                Simulation only, do not actually connect to the VPN
                         server
-  -n NVRAM, --nvram NVRAM
-                        Specify client to save configuration to NVRAM
-                        (Asuswrt-Merlin)
 
 OpenVPN Options:
   Configurable Options Being Passed Downed To OpenVPN
@@ -394,7 +302,6 @@ Firewall Options:
 ## Todo
 
 -   [x] find servers with P2P support, Dedicated IPs, Anti DDoS, Double VPN, Onion over VPN
--   [x] utilise the frequently updated api at "api.nordvpn.com/server"
 -   [x] clean exit, handle exceptions
 -   [x] store credentials from user input, if "credentials" file exists use that instead
 -   [x] sane command-line options following the POSIX guidelines
@@ -407,4 +314,3 @@ Firewall Options:
 -   [x] uninstall.sh # sudo pip3 uninstall openpyn
 -   [x] view status of the connection after launching in --daemon mode
 -   [x] desktop notifications
--   [x] initd script for Asuswrt-merlin: "/opt/etc/init.d/S23openpyn start"
