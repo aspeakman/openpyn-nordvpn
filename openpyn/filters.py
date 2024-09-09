@@ -18,7 +18,7 @@ def res_list_from_response(json_response) -> List:
     for eachServer in json_response["servers"]:
         these_groups = []
         for eachGroupId in eachServer["group_ids"]:
-            these_groups.append(eachGroupTitle)
+            these_groups.append(group_titles[eachGroupId])
         eachServer["group_titles"] = these_groups
         
     lat_longs = {}
