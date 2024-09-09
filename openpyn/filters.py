@@ -197,7 +197,7 @@ def filter_by_protocol(json_res_list: List, tcp: bool) -> List:
     for res in json_res_list:
         # when connecting using TCP only append if it supports OpenVPN-TCP
         tech_ids = res["technology_identifiers"]
-        if tcp is True and ("openvpn_tcp" in tech_ids or "openvpn_dedicated_tcp" in tech_ids:
+        if tcp is True and ("openvpn_tcp" in tech_ids or "openvpn_dedicated_tcp" in tech_ids):
             remaining_servers.append([res["hostname"][:res["hostname"].find(".")], res["load"]])
         # when connecting using UDP only append if it supports OpenVPN-UDP
         elif tcp is False and ("openvpn_udp" in tech_ids or "openvpn_dedicated_udp" in tech_ids):
