@@ -71,7 +71,10 @@ sudo openpyn --init
 ```
 
 Note: if you get ' openpyn: command not found' when using sudo on Fedora, create a symbolic link.
-`sudo ln -s /usr/local/bin/openpyn /bin/openpyn`
+
+```bash
+sudo ln -s /usr/local/bin/openpyn /bin/openpyn
+```
 
 That’s it, run the script! when done with it, press "Ctr + C" to exit.
 
