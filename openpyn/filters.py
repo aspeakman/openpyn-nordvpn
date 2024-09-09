@@ -23,7 +23,7 @@ def res_list_from_response(json_response) -> List:
         
     lat_longs = {}
     for eachLocation in json_response["locations"]:
-        lat_longs[eachLocation["id"]] = { 'lat': eachLocation["latitude"]; 'long': eachLocation["longitude"] }
+        lat_longs[eachLocation["id"]] = { 'lat': eachLocation["latitude"], 'long': eachLocation["longitude"] }
 
     for eachServer in json_response["servers"]:
         these_locations = []
