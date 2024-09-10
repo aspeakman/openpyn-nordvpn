@@ -56,7 +56,7 @@ A python3 script (systemd service as well) to manage OpenVPN connections. Create
     sudo python3 -m pip install --upgrade .
     ```
 	
-3.  To update with any version changes
+3.  To update subsequently with any version changes here
 
     ```bash
     cd openpyn-nordvpn/
