@@ -9,7 +9,7 @@ A python3 script (systemd service as well) to manage OpenVPN connections. Create
 
 -   Automatically connect to least busy, low latency servers in a given country.
 -   Systemd integration, easy to check VPN status, autostart at startup.
--   Find and connect to servers in a specific city or country.
+-   Find and connect to servers in a specific city.
 -   Uses NordVPN’s DNS servers and tunnels DNS queries through the VPN Tunnel.
 -   Use Iptables rules to prevent IP leakage if tunnel breaks (Experimental), ie KILL SWITCH.
 -   Quickly Connect to any specific server. i.e au10 or us20.
@@ -48,20 +48,22 @@ A python3 script (systemd service as well) to manage OpenVPN connections. Create
 
 ### Installation Methods
 
-1.  If necessary uninstall any existing openpyn versions with pip3 (Python=>3.5)
-    
-    ```bash
-    sudo python3 -m pip uninstall openpyn
-    ```
-
-2.  Clone this version and install. Do not install with --user switch, as OpenVPN needs to run as sudo and sudo won’t be able to locate openpyn.
+1.  Clone this version and install with pip3 (Python=>3.5). Do not install with --user switch, as OpenVPN needs to run as sudo and sudo won’t be able to locate openpyn.
 
     ```bash
     git clone https://github.com/aspeakman/openpyn-nordvpn.git
     cd openpyn-nordvpn/
     sudo python3 -m pip install --upgrade .
     ```
+	
+3.  To update with any version changes
 
+    ```bash
+    cd openpyn-nordvpn/
+	git pull
+    sudo python3 -m pip install --upgrade .
+    ```
+	
 ## Setup
 
 Initialise the script with "--init" (store credentials, install Systemd service, update/install VPN config files)

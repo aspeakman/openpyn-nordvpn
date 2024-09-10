@@ -113,7 +113,7 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
     filter_options = parser.add_argument_group("Filter Options", "Find Specific Types Of Servers")
     filter_options.add_argument(
         '-a', '--area', type=str, help='Specify city name only e.g \
-        "openpyn au -a victoria" or "openpyn au -a \'sydney\'"')
+        "openpyn au -a melbourne" or "openpyn au -a \'sydney\'"')
     filter_options.add_argument(
         '-m', '--max-load', type=int, default=70, help='Specify load threshold, \
         rejects servers with more load than this, DEFAULT=%(default)s')
