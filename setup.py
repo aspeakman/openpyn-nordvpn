@@ -19,7 +19,7 @@ setuptools.setup(
     author='JGill',
     zip_safe=False,
     author_email='joty@mygnu.org',
-    url='https://github.com/jotyGill/openpyn-nordvpn/',
+    url='https://github.com/aspeakman/openpyn-nordvpn/',
     keywords=['openvpn wrapper', 'nordvpn', 'nordvpn client', 'secure vpn', 'vpn wrapper', 'private vpn', 'privacy'],
     python_requires='>=3.5',
     install_requires=['colorama', 'coloredlogs', 'jsonschema', 'requests', 'tqdm', 'verboselogs'],
