@@ -9,7 +9,7 @@ A python3 script (systemd service as well) to manage OpenVPN connections. Create
 
 -   Automatically connect to least busy, low latency servers in a given country.
 -   Systemd integration, easy to check VPN status, autostart at startup.
--   Find and connect to servers in a specific city or state.
+-   Find and connect to servers in a specific city or country.
 -   Uses NordVPN’s DNS servers and tunnels DNS queries through the VPN Tunnel.
 -   Use Iptables rules to prevent IP leakage if tunnel breaks (Experimental), ie KILL SWITCH.
 -   Quickly Connect to any specific server. i.e au10 or us20.
@@ -87,7 +87,7 @@ That’s it, run the script! when done with it, press "Ctr + C" to exit.
 openpyn us
 ```
 
--   Now, you can also specify a city or state, useful when companies (like Google) lock your
+-   Now, you can also specify a city, useful when companies (like Google) lock your
     account if you try to login from an IP that resides in a different physical location.
 
 ```bash
@@ -243,7 +243,7 @@ Connect Options:
 Filter Options:
   Find Specific Types Of Servers
 
-  -a AREA, --area AREA  Specify area, city name or state e.g "openpyn au -a
+  -a AREA, --area AREA  Specify city name only e.g "openpyn au -a
                         victoria" or "openpyn au -a 'sydney'"
   -m MAX_LOAD, --max-load MAX_LOAD
                         Specify load threshold, rejects servers with more load

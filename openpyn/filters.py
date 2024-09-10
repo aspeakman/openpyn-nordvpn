@@ -51,6 +51,7 @@ def res_list_from_response(json_response) -> List:
 
 def filter_by_area(area: str, type_country_filtered: List) -> List:
     remaining_servers = []
+    area = area.lower()
     for aServer in type_country_filtered:
         for aCity in aServer["cities"]:
             if aCity.lower() == area:

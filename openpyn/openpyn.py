@@ -1105,13 +1105,6 @@ def display_servers(list_servers: str, port: str, area: str, p2p: bool, dedicate
               ", Groups =", res["group_titles"], "\n")
         servers_on_web.add(res["hostname"][:res["hostname"].find(".")])
 
-    """if not area:
-        locations_in_country = locations.get_unique_locations(list_of_servers=json_res_list)
-        print("The available cities in country", list_servers.upper(), "are :")
-        for eachLocation in locations_in_country:
-            print(eachLocation[2])
-        print("")"""
-
     if list_servers != "all" and not p2p and not dedicated and not double_vpn \
             and not tor_over_vpn and not anti_ddos and not netflix and not area:
         # else not applicable.
