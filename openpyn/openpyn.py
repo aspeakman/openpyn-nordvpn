@@ -36,7 +36,6 @@ from openpyn import credentials
 from openpyn import filters
 from openpyn import firewall
 from openpyn import initd
-from openpyn import locations
 from openpyn import log_folder
 from openpyn import log_format
 from openpyn import ovpn_folder
@@ -113,7 +112,7 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
 
     filter_options = parser.add_argument_group("Filter Options", "Find Specific Types Of Servers")
     filter_options.add_argument(
-        '-a', '--area', type=str, help='Specify area, city name or state e.g \
+        '-a', '--area', type=str, help='Specify city name only e.g \
         "openpyn au -a victoria" or "openpyn au -a \'sydney\'"')
     filter_options.add_argument(
         '-m', '--max-load', type=int, default=70, help='Specify load threshold, \
@@ -1101,16 +1100,17 @@ def display_servers(list_servers: str, port: str, area: str, p2p: bool, dedicate
     # add server names to "servers_on_web" set
     for res in json_res_list:
         print("Server =", res["hostname"][:res["hostname"].find(".")], ", Load =", res["load"],
-              ", Country =", res["name"][:res["name"].find(" #")], 
+              ", Country =", res["name"][:res["name"].find(" #")],
+              ", Cities =", res["cities"],              
               ", Groups =", res["group_titles"], "\n")
         servers_on_web.add(res["hostname"][:res["hostname"].find(".")])
 
-    if not area:
+    """if not area:
         locations_in_country = locations.get_unique_locations(list_of_servers=json_res_list)
-        print("The available Locations in country", list_servers.upper(), "are :")
+        print("The available cities in country", list_servers.upper(), "are :")
         for eachLocation in locations_in_country:
             print(eachLocation[2])
-        print("")
+        print("")"""
 
     if list_servers != "all" and not p2p and not dedicated and not double_vpn \
             and not tor_over_vpn and not anti_ddos and not netflix and not area:

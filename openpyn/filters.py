@@ -22,14 +22,19 @@ def res_list_from_response(json_response) -> List:
         eachServer["group_titles"] = these_groups
         
     lat_longs = {}
+    cities = {}
     for eachLocation in json_response["locations"]:
         lat_longs[eachLocation["id"]] = { 'lat': eachLocation["latitude"], 'long': eachLocation["longitude"] }
+        cities[eachLocation["id"]] = eachLocation["country"]["city"]["name"]
 
     for eachServer in json_response["servers"]:
         these_locations = []
+        these_cities = []
         for eachLocationId in eachServer["location_ids"]:
             these_locations.append(lat_longs[eachLocationId])
+            these_cities.append(cities[eachLocationId])
         eachServer["lat_longs"] = these_locations
+        eachServer["cities"] = these_cities
     
     technology_identifiers = {}
     for eachTechnology in json_response["technologies"]:
@@ -46,17 +51,11 @@ def res_list_from_response(json_response) -> List:
 
 def filter_by_area(area: str, type_country_filtered: List) -> List:
     remaining_servers = []
-    resolved_locations = locations.get_unique_locations(list_of_servers=type_country_filtered)
     for aServer in type_country_filtered:
-        for item in resolved_locations:
-            lower_case_areas = [x.lower() for x in item[2]]
-            for aLocation in aServer["lat_longs"]:
-                if aLocation["lat"] == item[1]["lat"] and \
-                        aLocation["long"] == item[1]["long"] and \
-                        area.lower() in lower_case_areas:
-                    aServer["location_names"] = item[2]  # add location info to server
-                    remaining_servers.append(aServer)
-                    # logger.debug(aServer)
+        for aCity in aServer["cities"]:
+            if aCity.lower() == area:
+                remaining_servers.append(aServer)
+                # logger.debug(aServer)
     return remaining_servers
 
 
@@ -65,7 +64,7 @@ def filter_by_country(country_code: str, type_filtered_servers: List) -> List:
     for aServer in type_filtered_servers:
         if aServer["hostname"][:2] == country_code:
             remaining_servers.append(aServer)
-            # logger.debug(aServer["domain"])
+            # logger.debug(aServer["hostname"])
     return remaining_servers
 
 
@@ -197,10 +196,10 @@ def filter_by_protocol(json_res_list: List, tcp: bool) -> List:
     for res in json_res_list:
         # when connecting using TCP only append if it supports OpenVPN-TCP
         tech_ids = res["technology_identifiers"]
-        if tcp is True and ("openvpn_tcp" in tech_ids or "openvpn_dedicated_tcp" in tech_ids):
+        if tcp is True and "openvpn_tcp" in tech_ids:
             remaining_servers.append([res["hostname"][:res["hostname"].find(".")], res["load"]])
         # when connecting using UDP only append if it supports OpenVPN-UDP
-        elif tcp is False and ("openvpn_udp" in tech_ids or "openvpn_dedicated_udp" in tech_ids):
+        elif tcp is False and "openvpn_udp" in tech_ids:
             remaining_servers.append([res["hostname"][:res["hostname"].find(".")], res["load"]])
     return remaining_servers
 
