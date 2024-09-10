@@ -175,7 +175,7 @@ sudo openpyn -x # optionally --allow 22 if using as SSH server
 -   To download/update the latest VPN config files from NordVPN.
 
 ```bash
-openpyn --update
+sudo openpyn --update
 ```
 
 ## Usage Options
