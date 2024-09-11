@@ -246,7 +246,7 @@ Filter Options:
   Find Specific Types Of Servers
 
   -a AREA, --area AREA  Specify city name only (no regions any more)
-						e.g "openpyn au -a melbourne" or "openpyn au -a 'sydney'"
+                        e.g "openpyn au -a melbourne" or "openpyn au -a 'sydney'"
   -m MAX_LOAD, --max-load MAX_LOAD
                         Specify load threshold, rejects servers with more load
                         than this, DEFAULT=70
@@ -270,7 +270,7 @@ Display Options:
                         Displays all servers in that given country with their
                         current load and OpenVPN support status. Works in
                         conjunction with (-a | --area, and server types
-                        (--p2p, --tor) e.g "openpyn -l it --p2p --area milano"
+                        (--p2p, --tor) e.g "openpyn -l it --p2p --area milan"
   --status              Show last change in connection status
   --stats               Show OpenVPN connection stats
 

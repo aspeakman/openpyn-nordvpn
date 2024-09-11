@@ -533,7 +533,7 @@ def run(init: bool, server: str, country_code: str, country: str, area: str, tcp
             for aserver in chosen_servers:
                 if stats:
                     print(Style.BRIGHT + Fore.BLUE + "\nOut of the Best Available Servers, Chose",
-                          (Fore.GREEN + aserver + Fore.BLUE) + "\n")
+                          (Fore.GREEN + aserver + Fore.BLUE))
 
                 if nvram:
                     check_config_files()
@@ -801,7 +801,7 @@ Least Busy " + Fore.GREEN + str(len(better_servers_list)) + Fore.BLUE + " Server
         if netflix:
             print(", netflix =", netflix, end=" ")
 
-        print(Fore.BLUE + "Are: " + Fore.GREEN + str(better_servers_list) + Fore.BLUE + "\n")
+        print(Fore.BLUE + "Are: " + Fore.GREEN + str(better_servers_list) + Fore.BLUE )
     return better_servers_list
 
 
@@ -828,7 +828,7 @@ def ping_servers(better_servers_list: List, stats: bool) -> List:
     ping_subprocess_list = []
 
     if stats:
-        print(Style.BRIGHT + Fore.BLUE + "Sending Pings To Servers\n")
+        print(Style.BRIGHT + Fore.BLUE + "Sending Pings To Servers")
 
     for server_spec in better_servers_list:
         ping_subprocess_command[-1] = server_spec[0] + ".nordvpn.com"
@@ -872,7 +872,7 @@ def ping_servers(better_servers_list: List, stats: bool) -> List:
             ping_list = list(map(int, ping_list))
 
             if stats:
-                print(Style.BRIGHT + Fore.BLUE + "Ping Resonse From " + ping_subprocess[0][0].ljust(7) +
+                print(Style.BRIGHT + Fore.BLUE + "Ping Response From " + ping_subprocess[0][0].ljust(7) +
                       " min/avg/max/mdev = " + Fore.GREEN + str(ping_list), Fore.BLUE + "")
             ping_result.append(ping_subprocess[0])
             ping_result.append(ping_list)
@@ -1095,14 +1095,14 @@ def display_servers(list_servers: str, port: str, area: str, p2p: bool, dedicate
         print("with " + Fore.GREEN + "anti_ddos" + Fore.BLUE + " Support", end=" ")
     if netflix:
         print("with " + Fore.GREEN + "netflix" + Fore.BLUE + " Support", end=" ")
-    print("Are:\n" + Style.RESET_ALL)
+    print("Are:" + Style.RESET_ALL)
 
     # add server names to "servers_on_web" set
     for res in json_res_list:
         print("Server =", res["hostname"][:res["hostname"].find(".")], ", Load =", res["load"],
               ", Country =", res["name"][:res["name"].find(" #")],
               ", Cities =", res["cities"],              
-              ", Groups =", res["group_titles"], "\n")
+              ", Groups =", res["group_titles"])
         servers_on_web.add(res["hostname"][:res["hostname"].find(".")])
 
     if list_servers != "all" and not p2p and not dedicated and not double_vpn \
