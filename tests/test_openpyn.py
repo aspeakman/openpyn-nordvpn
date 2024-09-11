@@ -27,14 +27,9 @@ def test_list_tor():
 #     with mock.patch('sys.argv', ['openpyn', '-l', 'au', '--area', 'adelaide']):
 #         assert openpyn.main() == 0
 #
-#
-# def test_list_country_area_state():
-#     with mock.patch('sys.argv', ['openpyn', '-l', 'au', '--area', 'south australia']):
-#         assert openpyn.main() == 0
-
 
 def test_list_country_area_state_p2p():
-    with mock.patch("sys.argv", ["openpyn", "-l", "au", "--area", "south australia", "--p2p"]):
+    with mock.patch("sys.argv", ["openpyn", "-l", "au", "--area", "adelaide", "--p2p"]):
         assert openpyn.main() == 0
 
 

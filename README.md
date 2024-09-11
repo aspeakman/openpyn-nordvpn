@@ -245,8 +245,8 @@ Connect Options:
 Filter Options:
   Find Specific Types Of Servers
 
-  -a AREA, --area AREA  Specify city name only e.g "openpyn au -a
-                        victoria" or "openpyn au -a 'sydney'"
+  -a AREA, --area AREA  Specify city name only (no regions any more)
+						e.g "openpyn au -a melbourne" or "openpyn au -a 'sydney'"
   -m MAX_LOAD, --max-load MAX_LOAD
                         Specify load threshold, rejects servers with more load
                         than this, DEFAULT=70
