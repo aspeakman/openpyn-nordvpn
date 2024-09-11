@@ -15,6 +15,7 @@ from openpyn import ovpn_folder
 logger = logging.getLogger(__package__)
 verboselogs.install()
 
+NORDVPN_API_URL = "https://api.nordvpn.com/v2/servers?limit=16384"
 
 def get_json_cached(url) -> Dict:
     json_data = None
@@ -71,7 +72,7 @@ def get_data_from_api(
         country_code: str, area: str, p2p: bool, dedicated: bool, double_vpn: bool,
         tor_over_vpn: bool, anti_ddos: bool, netflix: bool, location: float) -> List:
     country_code = country_code.lower()
-    url = "https://api.nordvpn.com/v2/servers?limit=16384"
+    url = NORDVPN_API_URL
     json_res_list = get_json_cached(url)
 
     type_filtered_servers = []
@@ -93,7 +94,7 @@ def get_data_from_api(
 
 def list_all_countries() -> None:
     countries_mapping = {}
-    url = "https://api.nordvpn.com/v2/servers?limit=16384"
+    url = NORDVPN_API_URL
     json_response = get_json_cached(url)
     for res in json_response:
         if res["hostname"][:2] not in countries_mapping:
@@ -104,7 +105,7 @@ def list_all_countries() -> None:
 
 def get_country_code(full_name: str) -> str:
     full_name = full_name.lower()
-    url = "https://api.nordvpn.com/v2/servers?limit=16384"
+    url = NORDVPN_API_URL
     json_response = get_json_cached(url)
     for res in json_response:
         if res["name"][:res["name"].find(" #")].lower() == full_name:
@@ -115,7 +116,7 @@ def get_country_code(full_name: str) -> str:
 
 def get_country_name(iso_code: str) -> str:
     iso_code = iso_code.lower()
-    url = "https://api.nordvpn.com/v2/servers?limit=16384"
+    url = NORDVPN_API_URL
     json_response = get_json_cached(url)
     for res in json_response:
         if res["hostname"][:2] == iso_code:
