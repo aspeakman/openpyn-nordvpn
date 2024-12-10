@@ -56,13 +56,22 @@ A python3 script (systemd service as well) to manage OpenVPN connections. Create
     sudo python3 -m pip install --upgrade .
     ```
 	
-3.  To update subsequently with any version changes here
+2.  To update subsequently with any version changes here
 
     ```bash
     cd openpyn-nordvpn/
 	git pull
     sudo python3 -m pip install --upgrade .
     ```
+
+3.  Alternative install via pipx
+
+	```bash
+	sudo apt install pipx
+    pipx install https://github.com/aspeakman/openpyn-nordvpn.git
+	pipx ensurepath
+	sudo pipx ensurepath --global
+	```
 	
 ## Setup
 
@@ -89,8 +98,9 @@ That’s it, run the script! when done with it, press "Ctr + C" to exit.
 openpyn us
 ```
 
--   Now, you can also specify a city, useful when companies (like Google) lock your
-    account if you try to login from an IP that resides in a different physical location.
+-   You can also specify a city, useful when companies (like Google) lock your
+    account if you try to login from an IP that resides in a different physical location. Note
+    it is no longer possible to select by region or state.
 
 ```bash
 openpyn us -a ny

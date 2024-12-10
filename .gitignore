@@ -10,3 +10,5 @@ openpyn/test.py
 openpyn/credentials
 htmlcov
 files
+venv*/
+.gitignore
